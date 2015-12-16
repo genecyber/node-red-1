@@ -40,6 +40,10 @@ module.exports = function(RED) {
                 var node = this;
                 this.pn_obj.subscribe({
                     channel  : this.channel,
+                    presence: function(m){
+                        node.log(m)
+                        node.send({channel: channel, payload: message})
+                    },
                     callback : function(message, env, channel) {
                         node.log("Received message on channel " + channel + ", payload is " + message);
                         node.send({channel: channel, payload: message});
