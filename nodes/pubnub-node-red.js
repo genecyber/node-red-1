@@ -56,6 +56,31 @@ module.exports = function(RED) {
                 this.status({fill:"green",shape:"ring",text:"channel?"});
             }
         }
+        
+        // Subscribe to inputs
+        this.on('input', function (msg) {
+            if (msg.channel) {
+                this.log("Subscribing to channel (" + msg.channel + ")");
+                var node = this;
+                node.channel += msg.channel
+                this.pn_obj.subscribe({
+                    channel  : msg.channel,
+                    presence: function(m){
+                        node.log(m)
+                        node.send({channel: channel, payload: message})
+                    },
+                    callback : function(message, env, channel) {
+                        node.log("Received message on channel " + channel + ", payload is " + message);
+                        node.send({channel: channel, payload: message});
+                    }
+                });
+                this.status({fill:"green",shape:"dot",text:"listening"});
+            }
+            else {
+                this.warn("Unknown channel name!");
+                this.status({fill:"green",shape:"ring",text:"channel?"});
+            }
+        })
 
         // Destroy on node close event
         var node = this;
