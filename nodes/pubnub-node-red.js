@@ -75,7 +75,7 @@ module.exports = function(RED) {
                     },
                     connect: conn
                 })
-                function conn(){
+                var conn = function(){
                     node.pn_obj.publish({                                    
                             channel : msg.channel,
                             message : JSON.stringify({command: "joined"}),
