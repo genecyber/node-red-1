@@ -72,8 +72,16 @@ module.exports = function(RED) {
                     callback : function(message, env, channel) {
                         node.log("Received message on channel " + channel + ", payload is " + message);
                         node.send({channel: channel, payload: message});
-                    }
-                });
+                    },
+                    connect: conn
+                })
+                function conn(){
+                    node.pn_obj.publish({                                    
+                            channel : msg.channel,
+                            message : JSON.stringify({command: "joined"}),
+                            callback: function(m){ console.log(m) }
+                        })
+                }
                 this.status({fill:"green",shape:"dot",text:"listening"});
             }
             else {
